@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <vector>
 
 /*
  *  模板函数中, 返回值类型泛型, 如果参数和函数实现, 无法让编译器直观的推断返回值类型时, 必须需要调用方显式实例化
@@ -33,7 +34,6 @@ public:
     C(T1 _i): i(_i){}
     template<class T2> void func(T2 j);
 };
-
 //how to define C::func?
 template<class T1> template<class T2> void C<T1>::func (T2 j) {
     std::cout << ((i > j)?i:j) << std::endl;
@@ -42,6 +42,38 @@ TEST (test, how_to_define_template_member_function_not_inline) {
     C<int> c(10);
     c.func(20);
 }
+
+/*
+ *  可以指定默认的模板泛型类型, 注意, 只要必须是编译期间可推断的类型
+ * */
+template<class T1, class VT = std::vector<T1>, class T2 = double> class C_DEF {
+    T1 i;
+    VT v;
+    T2 d;
+
+public:
+    C_DEF(int _i, T2 _d): i(_i), d(_d) {
+        v.reserve(i);
+    }
+    size_t getCapacity () { return v.capacity(); }
+    T2 getD () { return d; }
+};
+TEST (test, default_template_args) {
+    C_DEF<int> c(10, 1.1);
+    std::cout << c.getCapacity() << std::endl;
+    std::cout << c.getD() << std::endl;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 int main (int argc, char *argv[]) {
     ::testing::InitGoogleTest(&argc, argv);
