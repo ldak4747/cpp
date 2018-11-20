@@ -1,0 +1,2 @@
+sh cmake.sh
+make
