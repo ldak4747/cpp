@@ -64,7 +64,28 @@ TEST (test, default_template_args) {
     std::cout << c.getD() << std::endl;
 }
 
+/*
+ *  模板参数不仅可以是泛型, 还可以是非浮点的右值常量, 比如底下的"template<class T, class VT = std::vector<T>, int LEN = 100>"
+ *  下面的例子就是, 通过模板指定一个类的默认成员值(最好就是整型右值, 字符串、空指针、浮点数都不可以)
+ *  在c++11可以声明时初始化的情况下, 这招优势不再明显
+ * */
+template<class T, class VT = std::vector<T>, int LEN = 100> class Vector_Array {
+    VT v;
+    int len = LEN;
 
+public:
+    Vector_Array(int _len = -1) {
+        if (_len > 0) {
+            len = _len;
+        }
+        v.reserve(len);
+    }
+    size_t getCapacity() { return v.capacity(); }
+};
+TEST (test, vector_or_array) {
+    Vector_Array<int> v;
+    std::cout << v.getCapacity() << std::endl;
+}
 
 
 
